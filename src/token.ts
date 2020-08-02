@@ -5,8 +5,6 @@ import {
 } from "../generated/schema"
 
 import { Token as TokenContract } from "../generated/templates/Token/Token"
-import { ERC721 as ERC721Template } from "../generated/templates"
-import { PNFTInterface as PNFTInterfaceTemplate } from "../generated/templates"
 
 const PI_ADDRESS = "0x0000000000000000000000000000000000000000";
 
@@ -46,10 +44,10 @@ export function createToken(tokenAddress: Address, tokenKind: BigInt, category: 
             token.assetCategory = category;
         } else if (tokenKind == BigInt.fromI32(2)) {
             token.nftCategory = category;    
-            ERC721Template.create(tokenAddress);
+            //ERC721Template.create(tokenAddress);
         } else if (tokenKind == BigInt.fromI32(3)) {
             token.pnftCategory = category;
-            PNFTInterfaceTemplate.create(tokenAddress);
+            //PNFTInterfaceTemplate.create(tokenAddress);
         }
     }
   

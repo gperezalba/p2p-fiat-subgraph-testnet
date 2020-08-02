@@ -1,7 +1,7 @@
 import { User, Reputation } from "../generated/schema";
 import { BigInt, Address } from "@graphprotocol/graph-ts";
-import { PIBP2P, HandleDealReputation } from "../generated/PIBP2P/PIBP2P";
-import { NameService, CreateName } from "../generated/templates/NameService/NameService";
+import { PIBP2P } from "../generated/PIBP2P/PIBP2P";
+import { NameService, CreateName } from "../generated/NameService/NameService";
 
 export function handleCreateName(event: CreateName): void {
     createUserIfNull(event.params.wallet.toHexString());
@@ -102,24 +102,6 @@ export function getNickname(walletAddress: string): string {
     } else {
         return "reverted";
     }
-}
-
-export function updateReputation(event: HandleDealReputation): void {
-    createUserIfNull(event.params.seller.toHexString());
-    let user = User.load(event.params.seller.toHexString());
-    let reputationId = event.params.seller.toHexString().concat("-").concat(event.params.tokenAddress.toHexString());
-    createReputationIfNull(reputationId, event.params.seller.toHexString(), event.params.tokenAddress.toHexString());
-    let reputation = Reputation.load(reputationId);
-
-    reputation.totalDeals = reputation.totalDeals.plus(BigInt.fromI32(1));
-
-    if (event.params.isSuccess) {
-        reputation.goodReputation = reputation.goodReputation.plus(event.params.dealAmount);
-    } else {
-        reputation.badReputation = reputation.badReputation.plus(event.params.dealAmount);
-    }
-
-    reputation.save();
 }
 
 function createReputationIfNull(id: string, user: string, tokenAddress: string): void {

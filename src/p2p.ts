@@ -13,7 +13,7 @@ import {
   NewCommission
 } from "../generated/PIBP2P/PIBP2P"
 import { Offer, Deal, Auditor, User, P2P } from "../generated/schema"
-import { pushOffer, pushPendingDeal, createUserIfNull, updateReputation } from "./user";
+import { pushOffer, pushPendingDeal, createUserIfNull } from "./user";
 import { createDeal, finishDeal, updateVote } from "./deal";
 import { createOffer, updateOffer, cancelOffer } from "./offer";
 
