@@ -87,7 +87,7 @@ export function createUserIfNull(userId: string): void {
         user.reputations = [];
         user.name = getNickname(userId);
         user.offchainReputation = BigInt.fromI32(0);
-        user.isDealLocked = false;
+        user.isOfferLocked = [];
 
         user.save();
     }

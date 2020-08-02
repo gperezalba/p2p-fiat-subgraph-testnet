@@ -12,7 +12,7 @@ import {
   OfferLock,
   NewCommission
 } from "../generated/PIBP2P/PIBP2P"
-import { Offer, Deal, Auditor, User, P2P } from "../generated/schema"
+import { Offer, Deal, Auditor, User, P2P, Lock } from "../generated/schema"
 import { pushOffer, pushPendingDeal, createUserIfNull } from "./user";
 import { createDeal, finishDeal, updateVote } from "./deal";
 import { createOffer, updateOffer, cancelOffer } from "./offer";
@@ -78,13 +78,29 @@ export function handleUpdateReputation(event: UpdateReputation): void {
   user.save();
 }
 
-export function handleDealLock(event: OfferLock): void {
+export function handleOfferLock(event: OfferLock): void {
   createUserIfNull(event.params.user .toHexString());
   let user = User.load(event.params.user.toHexString());
+  let lockId = event.params.user.toHexString().concat("-").concat(event.params.tokenAddress.toHexString());
+  let offerLock = Lock.load(lockId);
 
-  user.isDealLocked = event.params.isLocked;
+  if (offerLock == null) {
+    offerLock = new Lock(lockId);
+    offerLock.token = event.params.tokenAddress.toHexString();
+    offerLock.user = event.params.user.toHexString();
+  }
 
-  user.save();
+  offerLock.isLocked = event.params.isLocked;
+
+  offerLock.save();
+
+  let locks = user.isOfferLocked;
+
+  if (!locks.includes(lockId)) {
+    locks.push(lockId);
+    user.isOfferLocked = locks;
+    user.save();
+  }
 }
 
 export function handleNewCommission(event: NewCommission): void {

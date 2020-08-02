@@ -120,8 +120,15 @@ type User @entity {
   commodityDeals: [DealCommodity!]
   packableDeals: [DealPackable!]
   offchainReputation: BigInt
-  isDealLocked: Boolean
+  isOfferLocked: [Lock!]
   reputations: [Reputation!]
+}
+
+type Lock @entity {
+  id: ID!
+  isLocked: Boolean!
+  token: Token!
+  user: User! @derivedFrom(field: "isOfferLocked")
 }
 
 type Token @entity {
