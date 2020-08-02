@@ -87,7 +87,6 @@ export function handleOfferLock(event: OfferLock): void {
   if (offerLock == null) {
     offerLock = new Lock(lockId);
     offerLock.token = event.params.tokenAddress.toHexString();
-    offerLock.user = event.params.user.toHexString();
   }
 
   offerLock.isLocked = event.params.isLocked;
