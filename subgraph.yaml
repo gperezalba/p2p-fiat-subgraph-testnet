@@ -1,0 +1,144 @@
+specVersion: 0.0.2
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: PIBP2PFiat
+    network: mainnet
+    source:
+      address: "0x992B2c7d0441410689b7c03c7EBbb0FF7B062f51"
+      abi: PIBP2P
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.3
+      language: wasm/assemblyscript
+      entities:
+        - NewOffer
+        - NewDeal
+        - NewPendingDeal
+        - UpdateOffer
+        - CancelOffer
+        - VoteDeal
+        - AuditorNotification
+      abis:
+        - name: PIBP2P
+          file: ./abis/PIBP2P.json
+        - name: NameService
+          file: ./abis/NameService.json
+      eventHandlers:
+        - event: NewOffer(indexed address,indexed address,address,uint256,uint256,bool,bool,uint256[3],address,string,indexed bytes32,uint256[])
+          handler: handleNewOffer
+        - event: NewDeal(indexed bytes32,bool,indexed address)
+          handler: handleNewDeal
+        - event: NewPendingDeal(indexed bytes32,indexed bytes32,address,uint256,uint256)
+          handler: handleNewPendingDeal
+        - event: UpdateOffer(indexed bytes32,uint256,uint256)
+          handler: handleUpdateOffer
+        - event: CancelOffer(indexed bytes32)
+          handler: handleCancelOffer
+        - event: VoteDeal(indexed bytes32,address,uint8,uint8)
+          handler: handleVoteDeal
+        - event: AuditorNotification(indexed bytes32)
+          handler: handleAuditorNotification
+        - event: UpdateReputation(address,uint256)
+          handler: handleUpdateReputation
+        - event: OfferLock(indexed address,address,bool)
+          handler: handleOfferLock
+        - event: NewCommission(uint256)
+          handler: handleNewCommission
+      file: ./src/p2p.ts
+  - kind: ethereum/contract
+    name: PIBP2P
+    network: mainnet
+    source:
+      address: "0x1F1dC376B7DF6011Db6D20E0A2005A03004778c2"
+      abi: PIBP2P
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.3
+      language: wasm/assemblyscript
+      entities:
+        - NewOffer
+        - NewDeal
+        - NewPendingDeal
+        - UpdateOffer
+        - CancelOffer
+        - VoteDeal
+        - AuditorNotification
+      abis:
+        - name: PIBP2P
+          file: ./abis/PIBP2P.json
+        - name: NameService
+          file: ./abis/NameService.json
+      eventHandlers:
+        - event: UpdateReputation(address,uint256)
+          handler: handleUpdateReputation
+      file: ./src/p2p.ts
+  - kind: ethereum/contract
+    name: Controller
+    network: mainnet
+    source:
+      address: "0xd864aD84602FE08492Bd058cD6aBc47e82CcFF0A"
+      abi: Controller
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.3
+      language: wasm/assemblyscript
+      entities:
+        - NewAddress
+        - NewCommission
+        - NewMarket
+        - NewToken
+      abis:
+        - name: Controller
+          file: ./abis/Controller.json
+        - name: Token
+          file: ./abis/Token.json
+      eventHandlers:
+        - event: NewToken(address,uint256,bool)
+          handler: handleNewToken
+        - event: NewNFToken(address,uint256,bool)
+          handler: handleNewNFToken
+        - event: NewPNFToken(address,uint256,bool)
+          handler: handleNewPNFToken
+      file: ./src/controller.ts
+  - kind: ethereum/contract
+    name: NameService
+    network: mainnet
+    source:
+      address: "0xa235C036b75413e68f373BCa100bF818423Ee5B6"
+      abi: NameService
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.3
+      language: wasm/assemblyscript
+      entities:
+        - CreateName
+        - ChangeWallet
+        - ChangeOwner
+      abis:
+        - name: NameService
+          file: ./abis/NameService.json
+      eventHandlers:
+        - event: CreateName(string,indexed address,indexed address)
+          handler: handleCreateName
+      file: ./src/user.ts
+templates:
+  - name: Token
+    kind: ethereum/contract
+    network: mainnet
+    source:
+      abi: Token
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.1
+      language: wasm/assemblyscript
+      file: ./src/token.ts
+      entities:
+        - Transfer
+      abis:
+        - name: Token
+          file: ./abis/Token.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256,indexed bytes)
+          handler: handleTransfer   
